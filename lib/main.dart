@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 
 import 'app.dart';
+import 'examples/invoice.dart';
 
 void main() {
   runApp(const App());
@@ -35,7 +36,8 @@ class App extends StatelessWidget {
       theme: ThemeData.light().copyWith(scrollbarTheme: scrollbarTheme),
       darkTheme: ThemeData.dark().copyWith(scrollbarTheme: scrollbarTheme),
       title: 'Flutter PDF Demo',
-      home: const MyApp(),
+      //home: const MyApp(),
+      home: const DynamicTextfieldsApp(),
     );
   }
 }
