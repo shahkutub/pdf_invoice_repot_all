@@ -12,9 +12,9 @@ class SaleInputForm extends StatefulWidget{
 class _SaleInputFormState extends State<SaleInputForm>{
   List<Product> cities = [
     new Product(product_name: "cow7", product_price: 500),
-    new Product(product_name: "cow7", product_price: 500),
-    new Product(product_name: "cow7", product_price: 500),
-    new Product(product_name: "cow7", product_price: 500),
+    new Product(product_name: "cow8", product_price: 300),
+    new Product(product_name: "cow9", product_price: 400),
+    new Product(product_name: "cow6", product_price: 600),
 
   ];
   int index = 0;
@@ -30,11 +30,13 @@ class _SaleInputFormState extends State<SaleInputForm>{
 
     amountTextController.addListener(() {
       setState(() {
-        totalTextController.text = (int.parse(priceTextController.text)*int.parse(amountTextController.text)).toString();
+        calculation();
       });
     });
   }
-
+  void calculation() {
+    totalTextController.text = (int.parse(priceTextController.text)*int.parse(amountTextController.text)).toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +95,7 @@ class _SaleInputFormState extends State<SaleInputForm>{
                           index = cities.indexOf(value!);
                           priceTextController.text = value.product_price.toString();
 
-
+                          calculation();
                           print(index);
                         });
                       },
@@ -213,6 +215,8 @@ class _SaleInputFormState extends State<SaleInputForm>{
     );
   }
 }
+
+
 
 class Product {
    String? product_name;
