@@ -1,4 +1,6 @@
 
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,11 +19,21 @@ class _SaleInputFormState extends State<SaleInputForm>{
     new Product(product_name: "cow6", product_price: 600),
 
   ];
+
+  List<Product> salItems = [];
+
+
+
   int index = 0;
 
   var priceTextController =  TextEditingController();
   var amountTextController =  TextEditingController();
   var totalTextController =  TextEditingController();
+
+  String? selectedProductName;
+  double? width = 0;
+  double? height = 0;
+  int? total = 0;
 
   @override
   void initState() {
@@ -40,16 +52,19 @@ class _SaleInputFormState extends State<SaleInputForm>{
 
   @override
   Widget build(BuildContext context) {
-
+    width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white60,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            addProductWidget(context),
-          ],
-        ),
-      ),
+      body:addProductWidget(context),
+      //SingleChildScrollView(
+        //child:
+        // Column(
+        //   children: [
+        //     addProductWidget(context),
+        //   ],
+        // ),
+      //),
     );
   }
 
@@ -60,6 +75,30 @@ class _SaleInputFormState extends State<SaleInputForm>{
       margin: EdgeInsets.only(top: 40,right: 10,left: 10),
       child: Column(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                onTap: (){
+                  showProductAddDialoge();
+                },
+                child: Container(
+                  margin: EdgeInsets.all(10),
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width/4,
+                  height: 50,
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.deepOrange,
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border.all(
+                        color: Colors.red, style: BorderStyle.solid, width: 0.80),
+                  ),
+                  child: Text('Add Product'),
+                ),
+              )
+            ],
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -93,8 +132,8 @@ class _SaleInputFormState extends State<SaleInputForm>{
                       onChanged: (Product? value) {
                         setState(() {
                           index = cities.indexOf(value!);
+                          selectedProductName = value.product_name.toString();
                           priceTextController.text = value.product_price.toString();
-
                           calculation();
                           print(index);
                         });
@@ -130,9 +169,7 @@ class _SaleInputFormState extends State<SaleInputForm>{
                 ),
               ],
           ),
-          SizedBox(
-            height: 15,
-          ),
+          SizedBox(height: 15,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -191,7 +228,21 @@ class _SaleInputFormState extends State<SaleInputForm>{
 
               InkWell(
                 onTap: (){
+                  setState(() {
+                    salItems.add(
+                        Product(product_name: selectedProductName,
+                            product_price: int.parse(priceTextController.text),
+                            buy_amount: int.parse(amountTextController.text),
+                            price_total: int.parse(totalTextController.text)
+                        )
+                    );
+                    totalCalculate();
 
+                    priceTextController.text ="";
+                    amountTextController.text ="";
+                    totalTextController.text ="";
+
+                  });
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -210,11 +261,145 @@ class _SaleInputFormState extends State<SaleInputForm>{
 
             ],
           ),
+          SizedBox(height: 20,),
+          Visibility(
+            visible: salItems.length > 0?true:false,
+            child: Container(
+              margin: EdgeInsets.only(top: 10,left: 10,right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Name', style: TextStyle(color: Colors.white, fontSize: 15),),
+                  Text('Price',style: TextStyle(color: Colors.white, fontSize: 15)),
+                  Text('Amount',style: TextStyle(color: Colors.white, fontSize: 15)),
+                  Text('Total',style: TextStyle(color: Colors.white, fontSize: 15)),
+                  Text('Action',style: TextStyle(color: Colors.white, fontSize: 15)),
+                ],
+
+              ),
+            ),
+          ),
+          Expanded(
+            //height: 200,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: salItems.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 15,left: 10,right: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(salItems[index].product_name.toString(), style: TextStyle(color: Colors.black, fontSize: 15),),
+                        Text(salItems[index].product_price.toString(),style: TextStyle(color: Colors.black, fontSize: 15)),
+                        Text(salItems[index].buy_amount.toString(),style: TextStyle(color: Colors.black, fontSize: 15)),
+                        Text(salItems[index].price_total.toString(),style: TextStyle(color: Colors.black, fontSize: 15)),
+                        InkWell(
+                            child: Icon(Icons.cancel_outlined,color: Colors.red,),
+                          onTap: (){
+                              setState(() {
+                                salItems.remove(salItems[index]);
+                                totalCalculate();
+                              });
+
+                          },
+                        )
+                      ],
+
+                    ),
+                  );
+                }),
+          ),
+          Visibility(visible: salItems.length > 0?true:false, child: Container(height:1,width:width!-20.0, color: Colors.black45,)),
+          Visibility(
+            visible: salItems.length > 0?true:false,
+            child: Container(
+              alignment: Alignment.centerRight,
+              margin: EdgeInsets.only(top: 0,left: 10,right: 10,bottom: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text('   ', style: TextStyle(color: Colors.white, fontSize: 15),),
+                  Text('    ',style: TextStyle(color: Colors.white, fontSize: 15)),
+                  Text('Total',style: TextStyle(color: Colors.white, fontSize: 15)),
+                  Text('${total}',style: TextStyle(color: Colors.black, fontSize: 17)),
+                  Text('    ',style: TextStyle(color: Colors.white, fontSize: 15)),
+                ],
+
+              ),
+            ),
+          ),
+
         ],
       ),
     );
   }
+
+  void totalCalculate() {
+    total = 0;
+    salItems.forEach((element) {
+      total = total! + element.price_total!;
+    });
+  }
+
+  void showProductAddDialoge() {
+    var productTextController = TextEditingController();
+    var priceTextController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Expanded(
+          child: AlertDialog(
+            title: Text('Welcome'),
+            content: Container(
+              height: 150,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: productTextController,
+                    decoration: InputDecoration(
+                      hintText: 'Product Name',
+                      labelText: 'Product Name',
+                    ),
+                  ),
+                  SizedBox(height: 10,),
+                  TextField(
+                    controller: priceTextController,
+                    decoration: InputDecoration(
+                      hintText: 'Product Price',
+                      labelText: 'Product Price',
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                //textColor: Colors.black,
+                onPressed: () {
+                  setState(() {
+                    cities.add(Product(product_price: int.parse(priceTextController.text),product_name: productTextController.text));
+                  });
+                },
+                child: Text('Save'),
+              ),
+              TextButton(
+               // textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Cancel'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
+
+
 
 
 
@@ -222,11 +407,12 @@ class Product {
    String? product_name;
    int? product_price;
    int? buy_amount;
-   int? product_total;
+   int? price_total;
    Product({
     this.product_name,
     this.product_price,
     this.buy_amount,
-    this.product_total,
+    this.price_total,
   });
 }
+
