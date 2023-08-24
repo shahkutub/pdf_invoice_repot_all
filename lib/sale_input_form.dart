@@ -380,6 +380,8 @@ class _SaleInputFormState extends State<SaleInputForm>{
                 onPressed: () {
                   setState(() {
                     cities.add(Product(product_price: int.parse(priceTextController.text),product_name: productTextController.text));
+                    productTextController.text='';
+                    priceTextController.text='';
                   });
                 },
                 child: Text('Save'),
