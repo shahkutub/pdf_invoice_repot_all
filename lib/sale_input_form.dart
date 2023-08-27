@@ -70,7 +70,6 @@ class _SaleInputFormState extends State<SaleInputForm>{
 
   Widget addProductWidget(BuildContext context) {
 
-
     return Container(
       margin: EdgeInsets.only(top: 40,right: 10,left: 10),
       child: Column(

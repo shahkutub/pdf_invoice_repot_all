@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:printing_demo/splash_screen.dart';
 
 import 'app.dart';
+import 'due_input_form.dart';
 import 'examples/invoice.dart';
 import 'sale_input_form.dart';
 
@@ -41,7 +42,7 @@ class App extends StatelessWidget {
       //home: const MyApp(),
       //home: const DynamicTextfieldsApp(),
       //home:  SplashScreen(),
-      home:  SaleInputForm(),
+      home:  DueInputForm(),
     );
   }
 }
