@@ -210,32 +210,72 @@ class _DueInputFormState extends State<DueInputForm> {
 
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 15,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width/2.2,
+                  //padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TextField(
+                    controller: referenceMobileTextController,
+                    keyboardType: TextInputType.phone,
+                    style: TextStyle(color: Colors.black),
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: 'Commitment Date',
+                      hintText: 'Commitment Date',
+                      labelStyle: TextStyle(color: Colors.black,fontSize: 15),
+                      border: OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 0.80, color: Colors.black),
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 0.80, color: Colors.black),
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                    onTap: () {
 
-            InkWell(
-              onTap: (){
-                setState(() {
-                  saveDue(customerNameTextController.text,customerAddressTextController.text,customerMobileTextController.text,
-                      referenceNameTextController.text,referenceMobileTextController.text,dueTextController.text,"hhj","bmnb");
-                  customerNameTextController.text ="";
-                  customerAddressTextController.text ="";
-                  customerMobileTextController.text ="";
-
-                });
-              },
-              child: Container(
-                alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width/2.5,
-                height: 50,
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  color: Colors.deepOrange,
-                  borderRadius: BorderRadius.circular(15.0),
-                  border: Border.all(
-                      color: Colors.red, style: BorderStyle.solid, width: 0.80),
+                    },
+                  ),
                 ),
-                child: Text('Save'),
-              ),
+                InkWell(
+                  onTap: (){
+                    setState(() {
+                      if(customerNameTextController.text.isEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:  Text( 'Input Customer Name')));
+                      }else if(customerAddressTextController.text.isEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:  Text( 'Input Customer Address')));
+                      }else if(referenceNameTextController.text.isEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:  Text( 'Input Reference nam')));
+                      }else{
+                        saveDue(customerNameTextController.text,customerAddressTextController.text,customerMobileTextController.text,
+                            referenceNameTextController.text,referenceMobileTextController.text,dueTextController.text,'hhj','bmnb');
+                        customerNameTextController.text ='';
+                        customerAddressTextController.text ='';
+                        customerMobileTextController.text ='';
+                      }
+
+
+                    });
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width/2.2,
+                    height: 50,
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.deepOrange,
+                      borderRadius: BorderRadius.circular(15.0),
+                      border: Border.all(
+                          color: Colors.red, style: BorderStyle.solid, width: 0.80),
+                    ),
+                    child: Text('Save'),
+                  ),
+                ),
+              ],
             )
           ],
         ),
